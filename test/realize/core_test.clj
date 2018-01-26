@@ -3,6 +3,7 @@
             [clojure.test.generative :as test :refer [defspec]]
             [clojure.test.generative.runner :as runner]
             [clojure.test :refer [deftest testing is]]
+            [datomic.api :as d]
             [realize.core :as sut]))
 
 (defn is-lazy? [form]
@@ -28,6 +29,8 @@
 
 (def e (Exception. "Boom!"))
 (def e2 (Exception. "Bang!"))
+(def datomic-entity (d/entity (d/db (do (d/create-database "datomic:mem://test-db")
+                                        (d/connect "datomic:mem://test-db"))) 1))
 
 (deftest realize
   (testing "no errors"
@@ -48,7 +51,10 @@
 
   (testing "deeply nested"
     (is (= {:foo {:bar [:baz {:boo {:realize.core/exception e}}]}}
-           (sut/realize {:foo {:bar [:baz {:boo (map (fn [_] (throw e)) [1 2 3])}]}})))))
+           (sut/realize {:foo {:bar [:baz {:boo (map (fn [_] (throw e)) [1 2 3])}]}}))))
+
+  (testing "don't walk into collections that cannot be reconstructed via empty"
+    (is (= datomic-entity (sut/realize datomic-entity)))))
 
 (deftest find-exceptions
   (testing "no errors"

@@ -7,7 +7,9 @@
       (instance? clojure.lang.IMapEntry form) (vec (map realize form))
       (seq? form) (doall (map realize form))
       (instance? clojure.lang.IRecord form) (reduce (fn [r x] (conj r (realize x))) form form)
-      (coll? form) (into (empty form) (map realize form))
+      (coll? form) (if (= form (empty form))
+                     form ;; unable to empty, so cannot recreate -> skip
+                     (into (empty form) (map realize form)))
       :else form)
     (catch Throwable e {::exception e})))
 
