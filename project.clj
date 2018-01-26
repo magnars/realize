@@ -1,4 +1,4 @@
-(defproject realize "1.0.0"
+(defproject realize "1.1.0"
   :description "Realizing clojure data structures, no more laziness"
   :url "https://github.com/magnars/realize"
   :license {:name "BSD-3-Clause"

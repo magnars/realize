@@ -32,12 +32,18 @@ It also has a tool to check if your data structure threw any exceptions when bei
 
 ## Install
 
-Add `[realize "1.0.0"]` to `:dependencies` in your `project.clj`.
+Add `[realize "1.1.0"]` to `:dependencies` in your `project.clj`.
 
 ## Raison d'être
 
-This lib was created so that Prone does not explode when given lazy-seqs that
-throw exceptions when realized.
+This lib was created so that [Prone](https://github.com/magnars/prone) does not
+explode when given lazy-seqs that throw exceptions when realized.
+
+## Change log
+
+#### From 1.0 to 1.1
+
+- Realize no longer walks into forms that cannot be recreated, like Datomic entities
 
 ## Development
 
