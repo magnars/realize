@@ -23,13 +23,17 @@
 (defn find-exceptions
   ([form] (find-exceptions form []))
   ([form path]
-   (cond
-     (and (map? form) (::exception form)) [{:exception (::exception form) :path path}]
-     (map? form) (mapcat (fn [[k v]]
-                           (concat
-                            (find-exceptions k path)
-                            (find-exceptions v (conj path k))))
-                         form)
-     (coll? form) (mapcat (fn [i v] (find-exceptions v (conj path i)))
-                          (range)
-                          form))))
+   (try
+     (cond
+       (and (map? form) (::exception form)) [{:exception (::exception form) :path path}]
+       (map? form) (mapcat (fn [[k v]]
+                             (concat
+                              (find-exceptions k path)
+                              (find-exceptions v (conj path k))))
+                           form)
+       (coll? form) (mapcat (fn [i v] (find-exceptions v (conj path i)))
+                            (range)
+                            form))
+     (catch Throwable e
+       [{:exception (Exception. "Realize got an exception when finding exceptions, isn't that something!" e)
+         :path []}]))))
