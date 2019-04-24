@@ -54,7 +54,14 @@
            (sut/realize {:foo {:bar [:baz {:boo (map (fn [_] (throw e)) [1 2 3])}]}}))))
 
   (testing "don't walk into collections that cannot be reconstructed via empty"
-    (is (= datomic-entity (sut/realize datomic-entity)))))
+    (is (= datomic-entity (sut/realize datomic-entity))))
+
+  (testing "infinite lazy seq"
+    (is (= "Sequence of > 500 items found, aborting to guard against infinite seqs!"
+           (.getMessage (:realize.core/exception (sut/realize (range) 500)))))))
+
+(comment
+  (list? (map inc (range))))
 
 (deftest find-exceptions
   (testing "no errors"
