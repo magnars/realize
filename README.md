@@ -32,7 +32,7 @@ It also has a tool to check if your data structure threw any exceptions when bei
 
 ## Install
 
-Add `[realize "1.1.0"]` to `:dependencies` in your `project.clj`.
+Add `[realize "2019-04-24"]` to `:dependencies` in your `project.clj`.
 
 ## Raison d'être
 
@@ -40,6 +40,16 @@ This lib was created so that [Prone](https://github.com/magnars/prone) does not
 explode when given lazy-seqs that throw exceptions when realized.
 
 ## Change log
+
+#### From 1.1 to 2019-04-24
+
+- Realize now guards against infinite seqs, with a default limit of 10000 items in a seq.
+
+  The `realize` function takes an optional `max-len` argument to specify this limit.
+
+- Realize now reports errors that occur when `find-exceptions` is run. This
+  might happen if you get an error like OutOfMemoryError or StackOverflowError
+  when trying to find exceptions. Isn't this all a jolly good time?
 
 #### From 1.0 to 1.1
 
