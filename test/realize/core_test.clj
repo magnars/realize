@@ -58,7 +58,14 @@
 
   (testing "infinite lazy seq"
     (is (= "Sequence of > 500 items found, aborting to guard against infinite seqs!"
-           (.getMessage (:realize.core/exception (sut/realize (range) 500)))))))
+           (.getMessage (:realize.core/exception (sut/realize (range) 500))))))
+
+  (testing "tolerable infinite lazy seq"
+    (is (= ['(0 1 2 3 4)
+            {::sut/truncated? true}]
+           (let [res (sut/realize (range) {:max-len 5
+                                           :tolerate-long-seqs? true})]
+             [res (meta res)])))))
 
 (comment
   (list? (map inc (range))))
