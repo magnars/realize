@@ -30,6 +30,45 @@ It also has a tool to check if your data structure threw any exceptions when bei
 ;; => [{:exception e :path [:foo]}]
 ```
 
+If you have very big or even infinite lazy seqs, you are going to have a bad
+time realizing them all. By default, Realize will not accept collections with
+more than 10000 items. You can control this limit with the `:max-len` option:
+
+```clj
+(require '[realize.core :as realize])
+
+(def data (map inc (range)))
+
+(realize/realize data {:max-len 1500})
+```
+
+This will produce an exception. Sometimes though, getting the first `n` items of
+infinite seqs are a good compromise. You can tell Realize to chill out and
+behave like `take` by setting `:tolerate-long-seqs?` to `true`:
+
+```clj
+(require '[realize.core :as realize])
+
+(def data (map inc (range)))
+
+(realize/realize data {:max-len 1500
+                       :tolerate-long-seqs? true})
+```
+
+This will recursively prevent any seq in the result from containing more than
+1500 items without throwing exceptions. Seqs that have been truncated this way
+will indicate so in its metadata:
+
+```clj
+(require '[realize.core :as realize])
+
+(def data (map inc (range)))
+
+(meta (realize/realize data {:max-len 1500
+                             :tolerate-long-seqs? true}))
+;;=> {:realize.core/truncated? true}
+```
+
 ## Install
 
 Add `[realize "2019-04-24"]` to `:dependencies` in your `project.clj`.
