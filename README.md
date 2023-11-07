@@ -9,7 +9,7 @@ sequences in a Clojure data structure, replacing them with
 `{:realize.core/exception e}` if they throw an exception.
 
 ```clj
-(require '[realize.core :as [realize]])
+(require '[realize.core :as realize])
 
 (def e (Exception. "Boom!"))
 
